@@ -1,7 +1,5 @@
 <template>
-  <div style="padding:30px;">
-    <el-alert :closable="false" title="dictionary">
-      <router-view />
-    </el-alert>
+  <div>
+    <router-view />
   </div>
 </template>
