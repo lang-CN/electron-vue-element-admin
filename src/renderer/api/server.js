@@ -23,3 +23,10 @@ export function createServerType(data) {
   })
 }
 
+export function fetchSystemTypeList() {
+  return request({
+    url: '/vue-element-admin/server/systemType/list',
+    method: 'get'
+  })
+}
+

@@ -9,6 +9,17 @@ let serverType = Mock.mock({
   }]
 })
 
+let systemType = Mock.mock({
+  'list|8': [{
+    // 属性 id 是一个自增数，起始值为 1，每次增 1
+    'id|+1': 1,
+    'name|+1': ["win", "linux"],
+    'developer|+1': ["win", "redhat", "centos", "ubuntu"],
+    'version|+1': ["2016", "14.1.1", "14.1.2", "14.1.2"],
+    'orderName|+1': ["01", "02"]
+  }]
+})
+
 export default [{
     url: '/vue-element-admin/server/serverType/list',
     type: 'get',
@@ -62,6 +73,19 @@ export default [{
         code: 20000,
         data: {
           id: putData.id
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/server/systemType/list',
+    type: 'get',
+    response: _ => {
+      return {
+        code: 20000,
+        data: {
+          total: systemType.list.length,
+          items: systemType.list
         }
       }
     }
