@@ -30,3 +30,9 @@ export function fetchSystemTypeList() {
   })
 }
 
+export function fetchContainerTypeList() {
+  return request({
+    url: '/vue-element-admin/server/containerType/list',
+    method: 'get'
+  })
+}

@@ -20,6 +20,15 @@ let systemType = Mock.mock({
   }]
 })
 
+let containerType = Mock.mock({
+  'list|2': [{
+    // 属性 id 是一个自增数，起始值为 1，每次增 1
+    'id|+1': 1,
+    'name|+1': ["tomcat", "jboss"],
+    'orderName|+1': ["01", "02"]
+  }]
+})
+
 export default [{
     url: '/vue-element-admin/server/serverType/list',
     type: 'get',
@@ -86,6 +95,19 @@ export default [{
         data: {
           total: systemType.list.length,
           items: systemType.list
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/server/containerType/list',
+    type: 'get',
+    response: _ => {
+      return {
+        code: 20000,
+        data: {
+          total: containerType.list.length,
+          items: containerType.list
         }
       }
     }
