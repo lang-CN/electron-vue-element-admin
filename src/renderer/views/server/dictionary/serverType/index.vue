@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { fetchServerTypeList } from "@/api/server";
+import { fetchServerTypeList, updateServerType } from "@/api/server";
 
 export default {
   name: "InlineEditTable",
@@ -98,9 +98,16 @@ export default {
         type: "warning",
       });
     },
-    confirmEdit(row) {
+    async editServerType(id, row) {
+      return await updateServerType(id, row);
+    },
+    async confirmEdit(row) {
       row.edit = false;
       row.originalName = row.name;
+      const { data } = await updateServerType(row.id, row);
+      console.log(">>>>>>>>>>>>>>>>>>>");
+      console.log(data.status);
+      console.log(">>>>>>>>>>>>>>>>>>>");
       this.$message({
         message: "The title has been edited",
         type: "success",

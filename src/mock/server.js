@@ -10,15 +10,35 @@ let serverType = Mock.mock({
 })
 
 export default [{
-  url: '/vue-element-admin/server/serverTypeList',
-  type: 'get',
-  response: () => {
-    return {
-      code: 20000,
-      data: {
-        total: serverType.list.length,
-        items: serverType.list
+    url: '/vue-element-admin/server/serverType/list',
+    type: 'get',
+    response: _ => {
+      return {
+        code: 20000,
+        data: {
+          total: serverType.list.length,
+          items: serverType.list
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/server/serverType/[A-Za-z0-9]',
+    type: 'put',
+    response: data => {
+      let _status = "warning";
+      for (const serverType of serverType.list) {
+        if (serverType.id === data.body.id) {
+          serverType.name = data.body.name;
+          _status = "success";
+        }
+      }
+      return {
+        code: 20000,
+        data: {
+          status: _status
+        }
       }
     }
   }
-}]
+]
