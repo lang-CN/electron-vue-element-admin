@@ -14,3 +14,12 @@ export function updateServerType(id, data) {
     data
   })
 }
+
+export function createServerType(data) {
+  return request({
+    url: '/vue-element-admin/server/serverType/create',
+    method: 'put',
+    data
+  })
+}
+

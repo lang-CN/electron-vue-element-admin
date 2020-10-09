@@ -23,7 +23,7 @@ export default [{
     }
   },
   {
-    url: '/vue-element-admin/server/serverType/[A-Za-z0-9]',
+    url: '/vue-element-admin/server/serverType/[0-9]',
     type: 'put',
     response: data => {
       let _status = "warning";
@@ -37,6 +37,31 @@ export default [{
         code: 20000,
         data: {
           status: _status
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/server/serverType/create',
+    type: 'put',
+    response: data => {
+      let maxId = 0;
+      for (const serverType of serverType.list) {
+        if (serverType.id > maxId) {
+          maxId = serverType.id;
+        }
+      }
+      let putData = {
+        id: maxId + 1,
+        name: data.body.name,
+        orderName: data.body.orderName
+      }
+      serverType.list.push(putData);
+
+      return {
+        code: 20000,
+        data: {
+          id: putData.id
         }
       }
     }

@@ -1,5 +1,16 @@
 <template>
   <div class="app-container">
+    <div class="filter-container">
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px"
+        type="primary"
+        icon="el-icon-edit"
+        @click="handleCreate"
+      >
+        Add
+      </el-button>
+    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -61,11 +72,39 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 弹出新增窗口 -->
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="left"
+        label-width="70px"
+        style="width: 400px; margin-left: 50px"
+      >
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="temp.name" />
+        </el-form-item>
+        <el-form-item label="排序号" prop="orderName">
+          <el-input v-model="temp.orderName" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false"> Cancel </el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus === 'create' ? createData() : updateData()"
+        >
+          Confirm
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchServerTypeList, updateServerType } from "@/api/server";
+import { fetchServerTypeList, updateServerType, createServerType } from "@/api/server";
 
 export default {
   name: "InlineEditTable",
@@ -73,6 +112,25 @@ export default {
     return {
       list: null,
       listLoading: true,
+      dialogStatus: "",
+      dialogFormVisible: false,
+      textMap: {
+        update: "编辑",
+        create: "新增",
+      },
+      temp: {
+        id: undefined,
+        name: "",
+        orderName: "",
+      },
+      rules: {
+        name: [
+          { required: true, message: "title is required", trigger: "blur" },
+        ],
+        orderName: [
+          { required: true, message: "title is required", trigger: "blur" },
+        ],
+      },
     };
   },
   created() {
@@ -98,9 +156,6 @@ export default {
         type: "warning",
       });
     },
-    async editServerType(id, row) {
-      return await updateServerType(id, row);
-    },
     async confirmEdit(row) {
       row.edit = false;
       row.originalName = row.name;
@@ -112,6 +167,40 @@ export default {
         message: "The title has been edited",
         type: "success",
       });
+    },
+    resetTemp() {
+      this.temp = {
+        id: undefined,
+        name: "",
+        orderName: "",
+      };
+    },
+    handleCreate() {
+      this.resetTemp();
+      this.dialogStatus = "create";
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      });
+    },
+    createData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          createServerType(this.temp).then((req) => {
+            console.log(">>>>>>>");
+            console.log(req.data.id);
+            this.temp.id = req.data.id;
+            this.list.unshift(this.temp)
+            this.dialogFormVisible = false
+            this.$notify({
+              title: 'Success',
+              message: 'Created Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+      })
     },
   },
 };
