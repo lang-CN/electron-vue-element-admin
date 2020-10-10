@@ -29,6 +29,37 @@ let containerType = Mock.mock({
   }]
 })
 
+let company = Mock.mock({
+  'list|4': [{
+    // 属性 id 是一个自增数，起始值为 1，每次增 1
+    'id|+1': 1,
+    'name|+1': ["科工", "重工", "水务", "郑州"],
+    'orderName|+1': ["01", "02", "03", "04"]
+  }]
+})
+
+let appliaction = Mock.mock({
+  'list|3': [{
+    // 属性 id 是一个自增数，起始值为 1，每次增 1
+    'id|+1': 1,
+    'name|+1': ["oim-hdgc", "app-hdgc", "app-xmgl"],
+    'describe|+1': ["工程管理（老平台）", "工程管理（新平台）", "项目管理系统"],
+    'ports|+1': [
+      [{
+        "name": "web",
+        "port": "90"
+      }],
+      [{
+        "name": "web",
+        "port": "90"
+      }, {
+        "name": "webserver",
+        "port": "1081"
+      }]
+    ]
+  }]
+})
+
 export default [{
     url: '/vue-element-admin/server/serverType/list',
     type: 'get',
@@ -108,6 +139,79 @@ export default [{
         data: {
           total: containerType.list.length,
           items: containerType.list
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/server/company/list',
+    type: 'get',
+    response: _ => {
+      return {
+        code: 20000,
+        data: {
+          total: company.list.length,
+          items: company.list
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/server/appliaction/list',
+    type: 'get',
+    response: _ => {
+      return {
+        code: 20000,
+        data: {
+          total: appliaction.list.length,
+          items: appliaction.list
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/server/appliaction/[0-9]',
+    type: 'put',
+    response: data => {
+      let _status = "warning";
+      for (const app of appliaction.list) {
+        if (app.id === data.body.id) {
+          app.name = data.body.name;
+          app.describe = data.body.describe;
+          app.ports = data.body.ports;
+          _status = "success";
+        }
+      }
+      return {
+        code: 20000,
+        data: {
+          status: _status
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/server/appliaction/create',
+    type: 'put',
+    response: data => {
+      let maxId = 0;
+      for (const app of appliaction.list) {
+        if (app.id > maxId) {
+          maxId = app.id;
+        }
+      }
+      let putData = {
+        id: maxId + 1,
+        name: data.body.name,
+        describe: data.body.describe,
+        ports: data.body.ports
+      }
+      appliaction.list.push(putData);
+
+      return {
+        code: 20000,
+        data: {
+          id: putData.id
         }
       }
     }

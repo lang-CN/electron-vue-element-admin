@@ -36,3 +36,33 @@ export function fetchContainerTypeList() {
     method: 'get'
   })
 }
+
+export function fetchCompanyTypeList() {
+  return request({
+    url: '/vue-element-admin/server/company/list',
+    method: 'get'
+  })
+}
+
+export function fetchAppliactionList() {
+  return request({
+    url: '/vue-element-admin/server/appliaction/list',
+    method: 'get'
+  })
+}
+
+export function updateAppliaction(id, data) {
+  return request({
+    url: `/vue-element-admin/server/appliaction/${id}`,
+    method: 'put',
+    data
+  })
+}
+
+export function createAppliaction(data) {
+  return request({
+    url: '/vue-element-admin/server/appliaction/create',
+    method: 'put',
+    data
+  })
+}

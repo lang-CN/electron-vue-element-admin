@@ -19,6 +19,13 @@ const serverRouter = {
                 title: '服务列表'
             }
         },{
+            path: 'appliaction',
+            name: 'Server-appliaction',
+            component: () => import('@/views/server/appliaction/index'),
+            meta: {
+                title: '应用列表'
+            }
+        },{
             path: 'container',
             name: 'Server-container',
             component: () => import('@/views/server/container'),
@@ -35,6 +42,13 @@ const serverRouter = {
             },
             redirect: '/server/dictionary/systemType',
             children: [{
+                path: 'company',
+                component: () => import('@/views/server/dictionary/company'),
+                name: 'Company',
+                meta: {
+                    title: '客户'
+                }
+            },{
                 path: 'systemType',
                 component: () => import('@/views/server/dictionary/systemType'),
                 name: 'SystemType',
