@@ -8,6 +8,7 @@ import Layout from '@/layout'
 
 /* Router Modules */
 import serverRouter from './modules/server'
+import regularCheckRouter from './modules/regularcheck'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -86,7 +87,9 @@ export const constantRoutes = [{
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
-  //服务
+  //定期检查
+  regularCheckRouter,
+  //服务器
   serverRouter,
   // 404 page must be placed at the end !!!
   {
