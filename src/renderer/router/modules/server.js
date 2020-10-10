@@ -12,25 +12,25 @@ const serverRouter = {
         icon: 'nested'
     },
     children: [{
-            path: 'index',
-            name: 'Server-index',
-            component: () => import('@/views/server/index'),
-            meta: {
-                title: '服务列表'
-            }
-        },{
             path: 'appliaction',
             name: 'Server-appliaction',
             component: () => import('@/views/server/appliaction/index'),
             meta: {
                 title: '应用列表'
             }
-        },{
+        }, {
             path: 'container',
             name: 'Server-container',
             component: () => import('@/views/server/container'),
             meta: {
                 title: '容器列表'
+            }
+        }, {
+            path: 'index',
+            name: 'Server-index',
+            component: () => import('@/views/server/index'),
+            meta: {
+                title: '服务器列表'
             }
         },
         {
@@ -48,7 +48,7 @@ const serverRouter = {
                 meta: {
                     title: '客户'
                 }
-            },{
+            }, {
                 path: 'systemType',
                 component: () => import('@/views/server/dictionary/systemType'),
                 name: 'SystemType',

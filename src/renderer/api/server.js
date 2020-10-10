@@ -1,5 +1,8 @@
 import request from '@/utils/request'
 
+/**
+ *  字典项
+ */
 export function fetchServerTypeList() {
   return request({
     url: '/vue-element-admin/server/serverType/list',
@@ -44,6 +47,10 @@ export function fetchCompanyTypeList() {
   })
 }
 
+
+/**
+ *  应用
+ */
 export function fetchAppliactionList() {
   return request({
     url: '/vue-element-admin/server/appliaction/list',
@@ -66,3 +73,56 @@ export function createAppliaction(data) {
     data
   })
 }
+
+/**
+ *  容器
+ */
+export function fetchContainerList() {
+  return request({
+    url: '/vue-element-admin/server/container/list',
+    method: 'get'
+  })
+}
+
+export function updateContainer(id, data) {
+  return request({
+    url: `/vue-element-admin/server/container/${id}`,
+    method: 'put',
+    data
+  })
+}
+
+export function createContainer(data) {
+  return request({
+    url: '/vue-element-admin/server/container/create',
+    method: 'put',
+    data
+  })
+}
+
+/**
+ *  服务器
+ */
+export function fetchServerList() {
+  return request({
+    url: '/vue-element-admin/server/server/list',
+    method: 'get'
+  })
+}
+
+export function updateServer(id, data) {
+  return request({
+    url: `/vue-element-admin/server/server/${id}`,
+    method: 'put',
+    data
+  })
+}
+
+export function createServer(data) {
+  return request({
+    url: '/vue-element-admin/server/server/create',
+    method: 'put',
+    data
+  })
+}
+ 

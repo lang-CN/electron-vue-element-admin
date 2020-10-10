@@ -1,69 +1,211 @@
 <template>
-  <el-table :data="tableData" style="width: 100%">
-    <el-table-column type="expand">
-      <template slot-scope="props">
-        <el-form label-position="left" inline class="demo-table-expand">
-          <el-form-item label="商品名称">
-            <span>{{ props.row.name }}</span>
-          </el-form-item>
-          <el-form-item label="所属店铺">
-            <span>{{ props.row.shop }}</span>
-          </el-form-item>
-          <el-form-item label="商品 ID">
-            <span>{{ props.row.id }}</span>
-          </el-form-item>
-          <el-form-item label="店铺 ID">
-            <span>{{ props.row.shopId }}</span>
-          </el-form-item>
-          <el-form-item label="商品分类">
-            <span>{{ props.row.category }}</span>
-          </el-form-item>
-          <el-form-item label="店铺地址">
-            <span>{{ props.row.address }}</span>
-          </el-form-item>
-          <el-form-item label="商品描述">
-            <span>{{ props.row.desc }}</span>
-          </el-form-item>
-        </el-form>
-      </template>
-    </el-table-column>
-    <el-table-column label="服务器 ID" prop="id"> </el-table-column>
-    <el-table-column label="服务器名称" prop="name"> </el-table-column>
-    <el-table-column label="服务器描述" prop="desc"> </el-table-column>
-  </el-table>
+  <div class="app-container">
+    <div class="filter-container">
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px"
+        type="primary"
+        icon="el-icon-edit"
+        @click="handleCreate"
+      >
+        Add
+      </el-button>
+    </div>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      border
+      fit
+      highlight-current-row
+      style="width: 100%"
+    >
+      <el-table-column align="center" label="ID" width="80">
+        <template slot-scope="{ row }">
+          <span>{{ row.id }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column nim-width="80px" align="center" label="系统">
+        <template slot-scope="{ row }">
+          <span>{{ row.server.name }}</span>
+          <el-tag>{{ row.server.ip }}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column nim-width="120px" align="center" label="地址">
+        <template slot-scope="{ row }">
+          <span>{{ row.addr }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="Actions" width="120">
+        <template slot-scope="{ row }">
+          <el-button
+            v-if="row.edit"
+            type="success"
+            size="small"
+            icon="el-icon-circle-check-outline"
+            @click="confirmEdit(row)"
+          >
+            Ok
+          </el-button>
+          <el-button
+            v-else
+            type="primary"
+            size="small"
+            icon="el-icon-edit"
+            @click="row.edit = !row.edit"
+          >
+            Edit
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 弹出新增窗口 -->
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="left"
+        label-width="70px"
+        style="width: 400px; margin-left: 50px"
+      >
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="temp.name" />
+        </el-form-item>
+        <el-form-item label="排序号" prop="orderName">
+          <el-input v-model="temp.orderName" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false"> Cancel </el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus === 'create' ? createData() : updateData()"
+        >
+          Confirm
+        </el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
+import {
+  fetchContainerList,
+  updateContainer,
+  createContainer,
+} from "@/api/server";
+
 export default {
+  name: "InlineEditTable",
   data() {
     return {
-      tableData: [
-        {
-          id: "12987122",
-          name: "好滋好味鸡蛋仔",
-          category: "江浙小吃、小吃零食",
-          desc: "荷兰优质淡奶，奶香浓而不腻",
-          address: "上海市普陀区真北路",
-          shop: "王小虎夫妻店",
-          shopId: "10333",
-        },
-      ],
+      list: null,
+      listLoading: true,
+      dialogStatus: "",
+      dialogFormVisible: false,
+      textMap: {
+        update: "编辑",
+        create: "新增",
+      },
+      temp: {
+        id: undefined,
+        name: "",
+        ip: "",
+        domain: "",
+        company: "",
+        system: "",
+      },
+      rules: {
+        name: [
+          { required: true, message: "title is required", trigger: "blur" },
+        ],
+      },
     };
+  },
+  created() {
+    this.getList();
+  },
+  methods: {
+    async getList() {
+      this.listLoading = true;
+      const { data } = await fetchContainerList();
+      const items = data.items;
+      this.list = items.map((v) => {
+        this.$set(v, "edit", false); // https://vuejs.org/v2/guide/reactivity.html
+        v.originalName = v.name; //  will be used when user click the cancel botton
+        return v;
+      });
+      this.listLoading = false;
+    },
+    cancelEdit(row) {
+      row.name = row.originalName;
+      row.edit = false;
+      this.$message({
+        message: "The title has been restored to the original value",
+        type: "warning",
+      });
+    },
+    async confirmEdit(row) {
+      row.edit = false;
+      row.originalName = row.name;
+      const { data } = await updateContainer(row.id, row);
+      console.log(">>>>>>>>>>>>>>>>>>>");
+      console.log(data.status);
+      console.log(">>>>>>>>>>>>>>>>>>>");
+      this.$message({
+        message: "The title has been edited",
+        type: "success",
+      });
+    },
+    resetTemp() {
+      this.temp = {
+        id: undefined,
+        name: "",
+        orderName: "",
+      };
+    },
+    handleCreate() {
+      this.resetTemp();
+      this.dialogStatus = "create";
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      });
+    },
+    createData() {
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+          createContainer(this.temp).then((req) => {
+            console.log(">>>>>>>");
+            console.log(req.data.id);
+            this.temp.id = req.data.id;
+            this.list.unshift(this.temp);
+            this.dialogFormVisible = false;
+            this.$notify({
+              title: "Success",
+              message: "Created Successfully",
+              type: "success",
+              duration: 2000,
+            });
+          });
+        }
+      });
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.demo-table-expand {
-  font-size: 0;
+<style scoped>
+.edit-input {
+  padding-right: 100px;
 }
-.demo-table-expand label {
-  width: 90px;
-  color: #99a9bf;
-}
-.demo-table-expand .el-form-item {
-  margin-right: 0;
-  margin-bottom: 0;
-  width: 50%;
+.cancel-btn {
+  position: absolute;
+  right: 15px;
+  top: 10px;
 }
 </style>

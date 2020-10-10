@@ -31,17 +31,49 @@
         </template>
       </el-table-column>
 
-      <el-table-column nim-width="120px" align="center" label="描述">
+      <el-table-column width="120px" align="center" label="容器">
         <template slot-scope="{ row }">
-          <span>{{ row.describe }}</span>
+          <el-tooltip class="item" effect="dark" placement="top-start">
+            <div slot="content">
+              服务IP:{{ row.container.server.ip }}
+              <br />
+              域名:{{ row.container.server.domain }}
+            </div>
+            <el-tag>{{ row.container.type.name }}</el-tag>
+          </el-tooltip>
         </template>
       </el-table-column>
 
       <el-table-column nim-width="120px" align="center" label="端口">
         <template slot-scope="{ row }">
-          <el-tag v-for="(item, index) in row.ports" :key="index" style="margin-left: 10px" >
-              {{ item.name }} : {{ item.port }}
+          <span v-for="(item, index) in row.ports" :key="index">
+            <span v-if="item.name === 'web'">
+              <el-tooltip class="item" effect="dark" placement="top-start">
+                <div slot="content">http://{{ row.container.server.domain }}:{{ item.port }}</div>
+                <el-tag style="margin-left: 10px">{{ item.name }} : {{ item.port }}</el-tag>
+              </el-tooltip>
+            </span>
+            <span v-if="item.name !== 'web'">
+              <el-tag style="margin-left: 10px">{{ item.name }} : {{ item.port }}</el-tag>
+            </span>
+          </span>
+        </template>
+      </el-table-column>
+
+      <el-table-column nim-width="120px" align="center" label="用户">
+        <template slot-scope="{ row }">
+          <el-tooltip
+            v-for="(item, index) in row.appUsers"
+            :key="index"
+            class="item"
+            effect="dark"
+            :content="item.password"
+            placement="top-start"
+          >
+            <el-tag style="margin-left: 10px">
+              {{ item.name }}
             </el-tag>
+          </el-tooltip>
         </template>
       </el-table-column>
 
