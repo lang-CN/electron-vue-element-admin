@@ -5,6 +5,7 @@ process.env.BABEL_ENV = 'renderer'
 const path = require('path')
 const { dependencies } = require('../package.json')
 const webpack = require('webpack')
+const config = require('../config/index.js')
 
 const MinifyPlugin = require("babel-minify-webpack-plugin")
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -132,6 +133,9 @@ let rendererConfig = {
   plugins: [
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({ filename: 'styles.css' }),
+    new webpack.DefinePlugin({
+      'process.env': process.env.NODE_ENV === 'production' ? config.build.env : config.dev.env
+    }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
