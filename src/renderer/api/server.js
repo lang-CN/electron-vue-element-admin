@@ -36,3 +36,10 @@ export function deleteServerById(id) {
     method: 'get',
   })
 }
+
+export function findDiskspaceById(id) {
+  return request({
+    url: `/vue-element-admin/server/findDiskspaceById/${id}`,
+    method: 'get',
+  })
+}

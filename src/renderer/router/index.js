@@ -71,7 +71,7 @@ export const constantRoutes = [{
     redirect: '/homePage',
     children: [{
       path: 'homePage',
-      component: () => import('@/views/homePage/index'),
+      component: () => import('@/views/server/index'),
       name: 'HomePage',
       meta: {
         title: '首页',

@@ -153,7 +153,7 @@ export default {
       rules: {
         name: [{ required: true, message: "名称必填", trigger: "blur" }],
         customer: [{ required: true, message: "客户必填", trigger: "blur" }],
-        ip: [{ validator: validateIp, trigger: "blur" }],
+        ip: [{ required: true, validator: validateIp, trigger: "blur" }],
         port: [{ required: true, message: "端口名称必填", trigger: "blur" }],
       },
     };
