@@ -26,7 +26,7 @@ const users = {
 export default [
   // user login
   {
-    url: '/vue-element-admin/user/login',
+    url: '/vue-element-admin/login',
     type: 'post',
     response: config => {
       const { username } = config.body
@@ -55,6 +55,8 @@ export default [
       const { token } = config.query
       const info = users[token]
 
+      console.log("==========");
+      console.log(info);
       // mock error
       if (!info) {
         return {

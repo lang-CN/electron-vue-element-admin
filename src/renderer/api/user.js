@@ -1,8 +1,10 @@
 import request from '@/utils/request'
 
 export function login(data) {
+  console.log("====");
+  console.log(data);
   return request({
-    url: '/vue-element-admin/user/login',
+    url: '/vue-element-admin/login',
     method: 'post',
     data
   })
